@@ -208,6 +208,9 @@ class RclParser
     when "false"
       @pos += 1
       [:lit, false]
+    when "nil"
+      @pos += 1
+      [:lit, nil]
     else
       raise "unexpected token"
     end

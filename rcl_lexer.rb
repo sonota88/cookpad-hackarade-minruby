@@ -5,6 +5,7 @@ class RclLexer
     def end return case when if while
     break
     true false
+    nil
   ]
 
   def tokenize(src)

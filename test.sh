@@ -75,3 +75,6 @@ _test test6-2.rb
 # _test test6-3-3.rb
 # _test test6-3-4.rb
 _test test6-3.rb
+
+# nil
+_test test7-1.rb
