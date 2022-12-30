@@ -113,7 +113,21 @@ class RclParser
     [:func_call, func_name, *args]
   end
 
+  def parse_require
+    consume "require"
+
+    arg = peek().value
+    @pos += 1
+
+    [:func_call, "require", [:lit, arg]]
+  end
+
   def parse_expr_factor_ident
+    # 暫定的に require だけ特別扱いする
+    if peek().value == "require"
+      return parse_require()
+    end
+
     if peek(1).value == "("
       parse_func_call()
     elsif peek(1).value == "["

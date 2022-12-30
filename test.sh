@@ -80,3 +80,5 @@ _test test6-3.rb
 _test test7-1.rb
 # <=, >=
 _test test7-2.rb
+# require
+_test test7-3.rb
