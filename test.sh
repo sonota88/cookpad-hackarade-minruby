@@ -78,3 +78,5 @@ _test test6-3.rb
 
 # nil
 _test test7-1.rb
+# <=, >=
+_test test7-2.rb

@@ -37,7 +37,7 @@ class RclLexer
         str = $1
         tokens << Token.new(:int, str.to_i, lineno)
         pos += str.size
-      when /\A(==|!=|=>|[<>(){}\[\]=;+\-*\/%,&])/
+      when /\A(==|!=|=>|<=|>=|[<>(){}\[\]=;+\-*\/%,&])/
         str = $1
         tokens << Token.new(:sym, str, lineno)
         pos += str.size

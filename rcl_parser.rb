@@ -268,7 +268,7 @@ class RclParser
   def parse_expr_prec_30
     expr = parse_expr_prec_20()
 
-    while include_op?(%(< >), peek())
+    while include_op?(%(< > <= >=), peek())
       op = peek().value
       @pos += 1
 
