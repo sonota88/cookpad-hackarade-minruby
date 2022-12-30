@@ -1,7 +1,7 @@
 require "pp"
 
 class Token
-  attr_reader :kind, :value
+  attr_reader :kind, :value, :lineno
 
   # kind:
   #   str:   string

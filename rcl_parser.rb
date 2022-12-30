@@ -486,6 +486,7 @@ class RclParser
     begin
       ast = parse_top_stmts()
     rescue => e
+      puts_e "line: #{peek().lineno}"
       dump_state()
       raise e
     end
