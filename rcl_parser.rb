@@ -370,9 +370,9 @@ class RclParser
       raise "unexpected token"
     end
 
-    stmts = parse_stmts()
+    raw_stmts = parse_stmts()
 
-    [cond_expr, *stmts]
+    [cond_expr, *raw_stmts]
   end
 
   def parse_case
