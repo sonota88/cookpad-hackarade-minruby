@@ -365,7 +365,7 @@ class RclParser
       cond_expr = parse_expr()
     when "else"
       consume "else"
-      cond_expr = 1 # true
+      cond_expr = :else
     else
       raise "unexpected token"
     end
@@ -400,9 +400,16 @@ class RclParser
 
     stmt =
       if when_clauses.size == 2
+        cond_expr =
+          if when_clauses[0][0] == :else
+            true
+          else
+            when_clauses[0][0]
+          end
+
         [
           :if,
-          when_clauses[0][0],      # cond
+          cond_expr,
           when_clauses[0][1..][0], # then
           when_clauses[1][1..][0]  # else
         ]
