@@ -90,3 +90,5 @@ _test test7-5.rb
 _test test7-6.rb
 # ハッシュリテラル中に改行
 _test test7-7.rb
+# ハッシュリテラル: 末尾にカンマ
+_test test7-8.rb

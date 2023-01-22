@@ -192,6 +192,7 @@ class RclParser
     while peek.value == ","
       consume ","
       skip_lfs()
+      break if peek().value == "}"
       xs += parse_expr_hash_new_kv()
     end
 
