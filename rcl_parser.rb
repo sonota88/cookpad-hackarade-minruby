@@ -358,7 +358,7 @@ class RclParser
     end
   end
 
-  def parse_when_clause
+  def parse_when_clause(case_expr)
     case peek().value
     when "when"
       consume "when"
@@ -381,7 +381,11 @@ class RclParser
         :TODO
       end
 
-    [cond_expr, stmts]
+    if case_expr
+      [[:==, case_expr, cond_expr], stmts]
+    else
+      [cond_expr, stmts]
+    end
   end
 
   def parse_case
@@ -389,9 +393,14 @@ class RclParser
 
     when_clauses = []
 
+    case_expr = nil
+    if peek().value != "when"
+      case_expr = parse_expr()
+    end
+
     skip_lfs()
     while peek().value != "end"
-      when_clauses << parse_when_clause()
+      when_clauses << parse_when_clause(case_expr)
       skip_lfs()
     end
 
