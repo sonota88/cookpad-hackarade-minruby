@@ -382,7 +382,11 @@ class RclParser
       end
 
     if case_expr
-      [[:==, case_expr, cond_expr], stmts]
+      if cond_expr == :else
+        [cond_expr, stmts]
+      else
+        [[:==, case_expr, cond_expr], stmts]
+      end
     else
       [cond_expr, stmts]
     end
@@ -407,24 +411,24 @@ class RclParser
     consume "end"
     skip_lfs()
 
-    stmt =
-      if when_clauses.size == 2
-        cond_expr =
-          if when_clauses[0][0] == :else
-            true
-          else
-            when_clauses[0][0]
-          end
+    last_when_clause = when_clauses.last
 
-        [
-          :if,
-          cond_expr,
-          when_clauses[0][1..][0], # then
-          when_clauses[1][1..][0]  # else
-        ]
+    stmt =
+      if last_when_clause[0] == :else
+        when_clauses.pop
+        last_when_clause[1]
       else
-        :TODO
+        nil
       end
+
+    when_clauses.reverse_each{ |when_clause|
+      stmt = [
+        :if,
+        when_clause[0],
+        when_clause[1],
+        stmt
+      ]
+    }
 
     stmt
   end

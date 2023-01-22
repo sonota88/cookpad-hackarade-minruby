@@ -86,3 +86,5 @@ _test test7-3.rb
 _test test7-4.rb
 # case {expr} when ...
 _test test7-5.rb
+# if/case: when句が3個
+_test test7-6.rb
