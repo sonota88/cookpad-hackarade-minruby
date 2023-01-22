@@ -372,7 +372,16 @@ class RclParser
 
     raw_stmts = parse_stmts()
 
-    [cond_expr, *raw_stmts]
+    stmts =
+      if raw_stmts.size == 1
+        raw_stmts[0]
+      elsif raw_stmts.size >= 2
+        [:stmts, *raw_stmts]
+      else
+        :TODO
+      end
+
+    [cond_expr, stmts]
   end
 
   def parse_case
