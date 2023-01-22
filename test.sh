@@ -88,3 +88,5 @@ _test test7-4.rb
 _test test7-5.rb
 # if/case: when句が3個
 _test test7-6.rb
+# ハッシュリテラル中に改行
+_test test7-7.rb

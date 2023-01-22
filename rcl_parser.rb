@@ -181,6 +181,7 @@ class RclParser
     consume "{"
     xs = []
 
+    skip_lfs()
     if peek().value == "}"
       consume "}"
       return [:hash_new, *xs]
@@ -190,6 +191,7 @@ class RclParser
 
     while peek.value == ","
       consume ","
+      skip_lfs()
       xs += parse_expr_hash_new_kv()
     end
 
