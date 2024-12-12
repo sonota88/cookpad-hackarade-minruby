@@ -255,7 +255,7 @@ class RclParser
   def parse_expr_prec_10
     expr = parse_expr_factor()
 
-    while include_op?(%(* / %), peek())
+    while include_op?(%w(* / %), peek())
       op = peek().value
       @pos += 1
 
@@ -270,7 +270,7 @@ class RclParser
   def parse_expr_prec_20
     expr = parse_expr_prec_10()
 
-    while include_op?(%(+ -), peek())
+    while include_op?(%w(+ -), peek())
       op = peek().value
       @pos += 1
 
@@ -285,7 +285,7 @@ class RclParser
   def parse_expr_prec_30
     expr = parse_expr_prec_20()
 
-    while include_op?(%(< > <= >=), peek())
+    while include_op?(%w(< > <= >=), peek())
       op = peek().value
       @pos += 1
 
@@ -300,7 +300,7 @@ class RclParser
   def parse_expr_prec_40
     expr = parse_expr_prec_30()
 
-    while include_op?(%(== !=), peek())
+    while include_op?(%w(== !=), peek())
       op = peek().value
       @pos += 1
 
@@ -315,7 +315,7 @@ class RclParser
   def parse_expr_prec_50
     expr = parse_expr_prec_40()
 
-    while include_op?(%(=), peek())
+    while include_op?(%w(=), peek())
       op = peek().value
       @pos += 1
 
