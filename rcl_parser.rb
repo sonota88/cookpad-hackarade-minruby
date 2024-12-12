@@ -95,7 +95,7 @@ class RclParser
     ops.include?(t.value)
   end
 
-  def parse_expr_factor_int
+  def parse_expr_term_int
     n = peek().value.to_i
     @pos += 1
 
@@ -122,7 +122,7 @@ class RclParser
     [:func_call, "require", [:lit, arg]]
   end
 
-  def parse_expr_factor_ident
+  def parse_expr_term_ident
     # 暫定的に require だけ特別扱いする
     if peek().value == "require"
       return parse_require()
@@ -201,7 +201,7 @@ class RclParser
     [:hash_new, *xs]
   end
 
-  def parse_expr_factor_sym
+  def parse_expr_term_sym
     case peek().value
     when "("
       consume "("
@@ -217,7 +217,7 @@ class RclParser
     end
   end
 
-  def parse_expr_factor_kw
+  def parse_expr_term_kw
     case peek().value
     when "true"
       @pos += 1
@@ -233,33 +233,33 @@ class RclParser
     end
   end
 
-  def parse_expr_factor_str
+  def parse_expr_term_str
     str = peek().value
     @pos += 1
 
     [:lit, str]
   end
 
-  def parse_expr_factor
+  def parse_expr_term
     case peek().kind
-    when :int   then parse_expr_factor_int()
-    when :ident then parse_expr_factor_ident()
-    when :sym   then parse_expr_factor_sym()
-    when :kw    then parse_expr_factor_kw()
-    when :str   then parse_expr_factor_str()
+    when :int   then parse_expr_term_int()
+    when :ident then parse_expr_term_ident()
+    when :sym   then parse_expr_term_sym()
+    when :kw    then parse_expr_term_kw()
+    when :str   then parse_expr_term_str()
     else
       raise "unexpected token kind"
     end
   end
 
   def parse_expr_prec_10
-    expr = parse_expr_factor()
+    expr = parse_expr_term()
 
     while include_op?(%w(* / %), peek())
       op = peek().value
       @pos += 1
 
-      rhs = parse_expr_factor()
+      rhs = parse_expr_term()
 
       expr = [op.to_sym, expr, rhs]
     end
