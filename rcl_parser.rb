@@ -259,9 +259,9 @@ class RclParser
       op = peek().value
       @pos += 1
 
-      factor = parse_expr_factor()
+      rhs = parse_expr_factor()
 
-      expr = [op.to_sym, expr, factor]
+      expr = [op.to_sym, expr, rhs]
     end
 
     expr
@@ -274,9 +274,9 @@ class RclParser
       op = peek().value
       @pos += 1
 
-      factor = parse_expr_prec_10()
+      rhs = parse_expr_prec_10()
 
-      expr = [op.to_sym, expr, factor]
+      expr = [op.to_sym, expr, rhs]
     end
 
     expr
@@ -289,9 +289,9 @@ class RclParser
       op = peek().value
       @pos += 1
 
-      factor = parse_expr_prec_20()
+      rhs = parse_expr_prec_20()
 
-      expr = [op.to_sym, expr, factor]
+      expr = [op.to_sym, expr, rhs]
     end
 
     expr
@@ -304,9 +304,9 @@ class RclParser
       op = peek().value
       @pos += 1
 
-      factor = parse_expr_prec_30()
+      rhs = parse_expr_prec_30()
 
-      expr = [op.to_sym, expr, factor]
+      expr = [op.to_sym, expr, rhs]
     end
 
     expr
@@ -319,9 +319,9 @@ class RclParser
       op = peek().value
       @pos += 1
 
-      factor = parse_expr_prec_40()
+      rhs = parse_expr_prec_40()
 
-      expr = [op.to_sym, expr, factor]
+      expr = [op.to_sym, expr, rhs]
     end
 
     case expr
