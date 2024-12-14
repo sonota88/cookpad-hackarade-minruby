@@ -128,10 +128,16 @@ class RclParser
       return parse_require()
     end
 
-    if peek(1).value == "("
-      parse_func_call()
-    elsif peek(1).value == "["
-      parse_expr_array_ref()
+    if peek(1)
+      if peek(1).value == "("
+        parse_func_call()
+      elsif peek(1).value == "["
+        parse_expr_array_ref()
+      else
+        val = peek().value
+        @pos += 1
+        ["var_ref", val]
+      end
     else
       val = peek().value
       @pos += 1
@@ -255,7 +261,7 @@ class RclParser
   def parse_expr_prec_10
     expr = parse_expr_term()
 
-    while include_op?(%w(* / %), peek())
+    while !end? && include_op?(%w(* / %), peek())
       op = peek().value
       @pos += 1
 
@@ -270,7 +276,7 @@ class RclParser
   def parse_expr_prec_20
     expr = parse_expr_prec_10()
 
-    while include_op?(%w(+ -), peek())
+    while !end? && include_op?(%w(+ -), peek())
       op = peek().value
       @pos += 1
 
@@ -285,7 +291,7 @@ class RclParser
   def parse_expr_prec_30
     expr = parse_expr_prec_20()
 
-    while include_op?(%w(< > <= >=), peek())
+    while !end? && include_op?(%w(< > <= >=), peek())
       op = peek().value
       @pos += 1
 
@@ -300,7 +306,7 @@ class RclParser
   def parse_expr_prec_40
     expr = parse_expr_prec_30()
 
-    while include_op?(%w(== !=), peek())
+    while !end? && include_op?(%w(== !=), peek())
       op = peek().value
       @pos += 1
 
@@ -315,13 +321,19 @@ class RclParser
   def parse_expr_prec_50
     expr = parse_expr_prec_40()
 
-    while include_op?(%w(=), peek())
+    while !end? && include_op?(%w(=), peek())
       op = peek().value
       @pos += 1
 
       rhs = parse_expr_prec_40()
 
-      expr = [op, expr, rhs]
+      case op
+      when "="
+        _, var_name = expr
+        expr = ["var_assign", var_name, rhs]
+      else
+        raise "unsupported"
+      end
     end
 
     case expr
@@ -532,8 +544,17 @@ class RclParser
     begin
       ast = parse_top_stmts()
     rescue => e
-      puts_e "line: #{peek().lineno}"
-      dump_state()
+      # puts "----"
+      # @tokens.each_with_index { |t, i|
+      #   puts "#{i} #{i==@pos ? "*" : " "}: #{t.inspect}"
+      # }
+      # puts "----"
+      # begin
+      #   puts_e "line: #{peek().lineno}"
+      # rescue => e
+      #   # TODO
+      # end
+      # dump_state()
       raise e
     end
 

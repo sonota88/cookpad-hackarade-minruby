@@ -1,3 +1,6 @@
 # Bundler
 /.bundle/
 /vendor/bundle/
+
+history
+debug.log

@@ -1,13 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    io-console (0.8.0)
     minruby (1.0.4)
+    reline (0.5.12)
+      io-console (~> 0.5)
 
 PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
   minruby
+  reline (~> 0.5.12)
 
 BUNDLED WITH
    2.5.22
