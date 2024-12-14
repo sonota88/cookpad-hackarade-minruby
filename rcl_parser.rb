@@ -99,7 +99,7 @@ class RclParser
     n = peek().value.to_i
     @pos += 1
 
-    [:lit, n]
+    ["lit", n]
   end
 
   def parse_func_call
@@ -110,7 +110,7 @@ class RclParser
     args = parse_exprs()
     consume ")"
 
-    [:func_call, func_name, *args]
+    ["func_call", func_name, *args]
   end
 
   def parse_require
@@ -119,7 +119,7 @@ class RclParser
     arg = peek().value
     @pos += 1
 
-    [:func_call, "require", [:lit, arg]]
+    ["func_call", "require", ["lit", arg]]
   end
 
   def parse_expr_term_ident
@@ -135,7 +135,7 @@ class RclParser
     else
       val = peek().value
       @pos += 1
-      [:var_ref, val]
+      ["var_ref", val]
     end
   end
 
@@ -147,7 +147,7 @@ class RclParser
     index = parse_expr()
     consume "]"
 
-    [:ary_ref, [:var_ref, var_name], index]
+    ["ary_ref", ["var_ref", var_name], index]
   end
 
   def parse_expr_array_new
@@ -156,7 +156,7 @@ class RclParser
 
     if peek().value == "]"
       consume "]"
-      return [:ary_new, *xs]
+      return ["ary_new", *xs]
     end
 
     xs << parse_expr()
@@ -167,7 +167,7 @@ class RclParser
     end
     consume "]"
 
-    [:ary_new, *xs]
+    ["ary_new", *xs]
   end
 
   def parse_expr_hash_new_kv
@@ -184,7 +184,7 @@ class RclParser
     skip_lfs()
     if peek().value == "}"
       consume "}"
-      return [:hash_new, *xs]
+      return ["hash_new", *xs]
     end
 
     xs += parse_expr_hash_new_kv()
@@ -198,7 +198,7 @@ class RclParser
 
     consume "}"
 
-    [:hash_new, *xs]
+    ["hash_new", *xs]
   end
 
   def parse_expr_term_sym
@@ -221,13 +221,13 @@ class RclParser
     case peek().value
     when "true"
       @pos += 1
-      [:lit, true]
+      ["lit", true]
     when "false"
       @pos += 1
-      [:lit, false]
+      ["lit", false]
     when "nil"
       @pos += 1
-      [:lit, nil]
+      ["lit", nil]
     else
       raise "unexpected token"
     end
@@ -237,7 +237,7 @@ class RclParser
     str = peek().value
     @pos += 1
 
-    [:lit, str]
+    ["lit", str]
   end
 
   def parse_expr_term
@@ -261,7 +261,7 @@ class RclParser
 
       rhs = parse_expr_term()
 
-      expr = [op.to_sym, expr, rhs]
+      expr = [op, expr, rhs]
     end
 
     expr
@@ -276,7 +276,7 @@ class RclParser
 
       rhs = parse_expr_prec_10()
 
-      expr = [op.to_sym, expr, rhs]
+      expr = [op, expr, rhs]
     end
 
     expr
@@ -291,7 +291,7 @@ class RclParser
 
       rhs = parse_expr_prec_20()
 
-      expr = [op.to_sym, expr, rhs]
+      expr = [op, expr, rhs]
     end
 
     expr
@@ -306,7 +306,7 @@ class RclParser
 
       rhs = parse_expr_prec_30()
 
-      expr = [op.to_sym, expr, rhs]
+      expr = [op, expr, rhs]
     end
 
     expr
@@ -321,14 +321,14 @@ class RclParser
 
       rhs = parse_expr_prec_40()
 
-      expr = [op.to_sym, expr, rhs]
+      expr = [op, expr, rhs]
     end
 
     case expr
-    in [:"=", [:var_ref, var_name], rhs]
-      expr = [:var_assign, var_name, rhs]
-    in [:"=", [:ary_ref, var_ref, index], rhs]
-      expr = [:ary_assign, var_ref, index, rhs]
+    in ["=", ["var_ref", var_name], rhs]
+      expr = ["var_assign", var_name, rhs]
+    in ["=", ["ary_ref", var_ref, index], rhs]
+      expr = ["ary_assign", var_ref, index, rhs]
     else
       ;
     end
@@ -353,9 +353,9 @@ class RclParser
     if stmts.size == 0
       :TODO
     elsif stmts.size == 1
-      [:while, cond_expr, stmts[0]]
+      ["while", cond_expr, stmts[0]]
     elsif stmts.size >= 2
-      [:while, cond_expr, [:stmts, *stmts]]
+      ["while", cond_expr, ["stmts", *stmts]]
     else
       raise "must not happen"
     end
@@ -379,7 +379,7 @@ class RclParser
       if raw_stmts.size == 1
         raw_stmts[0]
       elsif raw_stmts.size >= 2
-        [:stmts, *raw_stmts]
+        ["stmts", *raw_stmts]
       else
         :TODO
       end
@@ -388,7 +388,7 @@ class RclParser
       if cond_expr == :else
         [cond_expr, stmts]
       else
-        [[:==, case_expr, cond_expr], stmts]
+        [["==", case_expr, cond_expr], stmts]
       end
     else
       [cond_expr, stmts]
@@ -426,7 +426,7 @@ class RclParser
 
     when_clauses.reverse_each{ |when_clause|
       stmt = [
-        :if,
+        "if",
         when_clause[0],
         when_clause[1],
         stmt
@@ -484,9 +484,9 @@ class RclParser
     if stmts.size == 0
       :TODO
     elsif stmts.size == 1
-      [:func_def, func_name, args, stmts[0]]
+      ["func_def", func_name, args, stmts[0]]
     elsif stmts.size >= 2
-      [:func_def, func_name, args, [:stmts, *stmts]]
+      ["func_def", func_name, args, ["stmts", *stmts]]
     else
       raise "must not happen"
     end
@@ -517,7 +517,7 @@ class RclParser
       elsif stmts.size == 1
         stmts[0]
       elsif stmts.size >= 2
-        [:stmts, *stmts]
+        ["stmts", *stmts]
       else
         raise "must not happen"
       end
