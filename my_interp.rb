@@ -1,5 +1,29 @@
 require "minruby"
 
+def invert(bit)
+  bit == 0 ? 1 : 0
+end
+
+def set_bit(n, i, bit)
+  if bit == 0
+    len = n.bit_length
+    bits1 = 2 ** len - 1
+    bits2 = 1 << i
+    bits3 = bits1 ^ bits2
+    n & bits3
+  else
+    bits = 1 << i
+    n | bits
+  end
+end
+
+def emit_cosmic_ray(n)
+  return n if rand < 0.9
+
+  i = rand(n.bit_length)
+  set_bit(n, i, invert(n[i]))
+end
+
 def evaluate(tree, genv, lenv)
   return nil if tree.nil? # test7-6
 
@@ -28,6 +52,8 @@ def evaluate(tree, genv, lenv)
     evaluate(tree[1], genv, lenv) >= evaluate(tree[2], genv, lenv)
   when ">"
     evaluate(tree[1], genv, lenv) > evaluate(tree[2], genv, lenv)
+  when "~~"
+    emit_cosmic_ray(evaluate(tree[1], genv, lenv))
 
   when "stmts"
     i = 1

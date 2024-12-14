@@ -207,6 +207,12 @@ class RclParser
     ["hash_new", *xs]
   end
 
+  def parse_expr_term_cosmic_ray
+    consume "~~"
+    expr = parse_expr()
+    ["~~", expr]
+  end
+
   def parse_expr_term_sym
     case peek().value
     when "("
@@ -218,6 +224,8 @@ class RclParser
       parse_expr_array_new()
     when "{"
       parse_expr_hash_new()
+    when "~~"
+      parse_expr_term_cosmic_ray()
     else
       raise "unexpected token"
     end
